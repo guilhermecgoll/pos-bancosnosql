@@ -1,8 +1,10 @@
 1.1
-match(n) return n
+
+  match(n) return n
 
 1.2
-CALL db.Schema()
+
+``CALL db.Schema()``
 
 1.3
 match(p:Person) return p
