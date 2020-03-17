@@ -1,4 +1,7 @@
 # 1
+
+:play https://guides.neo4j.com/intro-neo4j-exercises/01.html
+
 ### 1.1
 
 match(n) return n
@@ -16,6 +19,9 @@ match(p:Person) return p
 match(m:Movie) return m
 
 # 2
+
+:play https://guides.neo4j.com/intro-neo4j-exercises/02.html
+
 ### 2.1
 
 match(m:Movie {released:2003}) return m
@@ -41,6 +47,9 @@ match(m:Movie) return m.title, m.released, m.tagline
 match(m:Movie) return m.title as Titulo, m.released as Lançamento, m.tagline as `Sub-título`
 
 # 3
+
+:play https://guides.neo4j.com/intro-neo4j-exercises/03.html
+
 ### 3.1
 
 call db.schema
@@ -63,6 +72,9 @@ match(p:Person {name: 'Tom Hanks'})-[r]-(m:Movie) return m.title, type(r)
 match(p:Person {name: 'Tom Hanks'})-[r:ACTED_IN]-(m:Movie) return m.title, r.roles
 
 # 4
+
+:play https://guides.neo4j.com/intro-neo4j-exercises/04.html
+
 ### 4.1
 
 match(p:Person)-[:ACTED_IN]->(m:Movie)
@@ -142,6 +154,9 @@ where m.title in (r.roles)
 return m.title, r.roles
 
 # 5
+
+:play https://guides.neo4j.com/intro-neo4j-exercises/05.html
+
 ### 5.1
 
 match(p1:Person)-[:ACTED_IN]->(m:Movie)<-[:DIRECTED]-(p2:Person),
@@ -217,6 +232,9 @@ optional match (p:Person)-[:REVIEWED]->(m)
 return  m.title as Filme, p.name as Revisores
 
 # 6
+
+:play https://guides.neo4j.com/intro-neo4j-exercises/06.html
+
 ### 6.1
 
 match(p:Person)-[:ACTED_IN]->(m:Movie)
@@ -255,6 +273,9 @@ where qtdAtuacoes <= 3
 return p.name, filmes
 
 # 7
+
+:play https://guides.neo4j.com/intro-neo4j-exercises/07.html
+
 ### 7.1
 
 match(a:Person)-[:ACTED_IN]->(m:Movie), (m)<-[:PRODUCED]-(p:Person)
