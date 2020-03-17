@@ -28,3 +28,18 @@ python -m venv .venv
 pip install redis
 ```
 
+## 2 - Executar o programa
+
+Para executá-lo basta navegar até o diretório ``redis`` e digitar o comando abaixo:
+
+```sh
+python .\redinsgo.py
+```
+
+O resultado esperado após a execução deste comando é algo similar a este abaixo:
+
+```sh
+Encontrou um ganhador!
+Após sortear 84 números, encontramos os seguintes ganhadores:
+usuario32
+```
