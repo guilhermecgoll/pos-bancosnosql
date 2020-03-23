@@ -339,45 +339,118 @@ Type "it" for more
 ### 1. Liste as ações com profit acima de 0.5 (limite a 10 o resultado)
 
 ```sh
+> db.stocks.find({"Profit Margin" : {$gt : 0.5}}, {"Ticker" : 1, "Profit Margin" : 1}).limit(10)
+{ "_id" : ObjectId("52853800bb1177ca391c180f"), "Ticker" : "AB", "Profit Margin" : 0.896 }
+{ "_id" : ObjectId("52853801bb1177ca391c1895"), "Ticker" : "AGNC", "Profit Margin" : 0.972 }
+{ "_id" : ObjectId("52853801bb1177ca391c1950"), "Ticker" : "ARCC", "Profit Margin" : 0.654 }
+{ "_id" : ObjectId("52853801bb1177ca391c195a"), "Ticker" : "ARI", "Profit Margin" : 0.576 }
+{ "_id" : ObjectId("52853801bb1177ca391c1968"), "Ticker" : "ARR", "Profit Margin" : 0.848 }
+{ "_id" : ObjectId("52853801bb1177ca391c1998"), "Ticker" : "ATHL", "Profit Margin" : 0.732 }
+{ "_id" : ObjectId("52853801bb1177ca391c19f6"), "Ticker" : "AYR", "Profit Margin" : 0.548 }
+{ "_id" : ObjectId("52853801bb1177ca391c1a97"), "Ticker" : "BK", "Profit Margin" : 0.63 }
+{ "_id" : ObjectId("52853801bb1177ca391c1abd"), "Ticker" : "BLX", "Profit Margin" : 0.588 }
+{ "_id" : ObjectId("52853801bb1177ca391c1af0"), "Ticker" : "BPO", "Profit Margin" : 0.503 }
 ```
 
 ### 2. Liste as ações com perdas (limite a 10 novamente)
 
 ```sh
+> db.stocks.find({"Profit Margin" : {$lt : 0}}, {"Ticker" : 1, "Profit Margin" : 1}).limit(10)  
+{ "_id" : ObjectId("52853800bb1177ca391c1806"), "Ticker" : "AAOI", "Profit Margin" : -0.023 }
+{ "_id" : ObjectId("52853800bb1177ca391c180c"), "Ticker" : "AAV", "Profit Margin" : -0.232 }
+{ "_id" : ObjectId("52853800bb1177ca391c1815"), "Ticker" : "ABCD", "Profit Margin" : -0.645 }
+{ "_id" : ObjectId("52853800bb1177ca391c1817"), "Ticker" : "ABFS", "Profit Margin" : -0.005 }
+{ "_id" : ObjectId("52853800bb1177ca391c181b"), "Ticker" : "ABMC", "Profit Margin" : -0.0966 }
+{ "_id" : ObjectId("52853800bb1177ca391c1821"), "Ticker" : "ABX", "Profit Margin" : -0.769 }
+{ "_id" : ObjectId("52853800bb1177ca391c1826"), "Ticker" : "ACCL", "Profit Margin" : -0.014 }
+{ "_id" : ObjectId("52853800bb1177ca391c182b"), "Ticker" : "ACFC", "Profit Margin" : -0.18 }
+{ "_id" : ObjectId("52853800bb1177ca391c182f"), "Ticker" : "ACH", "Profit Margin" : -0.051 }
+{ "_id" : ObjectId("52853800bb1177ca391c1832"), "Ticker" : "ACI", "Profit Margin" : -0.173 }
 ```
 
 ### 3. Liste as 10 ações mais rentáveis
 
 ```sh
+> db.stocks.find({}, {"Ticker" : 1, "Profit Margin" : 1}).sort({"Profit Margin" : -1}).limit(10)
+{ "_id" : ObjectId("52853801bb1177ca391c1af3"), "Ticker" : "BPT", "Profit Margin" : 0.994 }
+{ "_id" : ObjectId("52853802bb1177ca391c1b69"), "Ticker" : "CACB", "Profit Margin" : 0.994 }
+{ "_id" : ObjectId("5285380bbb1177ca391c2c3c"), "Ticker" : "ROYT", "Profit Margin" : 0.99 }
+{ "_id" : ObjectId("52853808bb1177ca391c281b"), "Ticker" : "NDRO", "Profit Margin" : 0.986 }
+{ "_id" : ObjectId("5285380fbb1177ca391c318e"), "Ticker" : "WHZ", "Profit Margin" : 0.982 }
+{ "_id" : ObjectId("52853808bb1177ca391c27bd"), "Ticker" : "MVO", "Profit Margin" : 0.976 }
+{ "_id" : ObjectId("52853801bb1177ca391c1895"), "Ticker" : "AGNC", "Profit Margin" : 0.972 }
+{ "_id" : ObjectId("5285380ebb1177ca391c3101"), "Ticker" : "VOC", "Profit Margin" : 0.971 }
+{ "_id" : ObjectId("52853807bb1177ca391c279a"), "Ticker" : "MTR", "Profit Margin" : 0.97 }
+{ "_id" : ObjectId("52853809bb1177ca391c2946"), "Ticker" : "OLP", "Profit Margin" : 0.97 }
 ```
 
 ### 4. Qual foi o setor mais rentável?
 
 ```sh
+db.stocks.aggregate([{$group : 
+{ _id : {"Sector": "$Sector"}, 
+total : { $sum : "$Profit Margin"}}}, 
+{$sort : {total : -1}}, {$limit : 1}])
 ```
 ### 5. Ordene as ações pelo profit e usando um cursor, liste as ações.
 
 ```sh
+> var cursor = db.stocks.find().sort({"Profit Margin" : -1})
+> cursor.forEach(function(x) {print (x.Ticker + " -> " + x["Profit Margin"]);})
 ```
 
 ### 6. Renomeie o campo “Profit Margin” para apenas “profit”.
 
 ```sh
+> db.stocks.updateMany({}, { $rename : {"Profit Margin" : "profit"}})
 ```
 
 ### 7. Agora liste apenas a empresa e seu respectivo resultado
 
 ```sh
+> db.stocks.find({}, {"_id" : 0, Company : 1, profit : 1})
+{ "Company" : "iShares MSCI AC Asia Information Tech" }
+{ "Company" : "WCM/BNY Mellon Focused Growth ADR ETF" }
+{ "Company" : "Alcoa, Inc.", "profit" : 0.013 }
+{ "Company" : "Agilent Technologies Inc.", "profit" : 0.137 }
+{ "Company" : "Altisource Asset Management Corporation" }
+{ "Company" : "Atlantic American Corp.", "profit" : 0.056 }
+{ "Company" : "Applied Optoelectronics, Inc.", "profit" : -0.023 }
+{ "Company" : "Aaron's, Inc.", "profit" : 0.06 }
+{ "Company" : "Advance Auto Parts Inc.", "profit" : 0.063 }
+{ "Company" : "Apple Inc.", "profit" : 0.217 }
+{ "Company" : "AAON Inc.", "profit" : 0.105 }
+{ "Company" : "American Assets Trust, Inc.", "profit" : 0.155 }
+{ "Company" : "Almaden Minerals Ltd." }
+{ "Company" : "Advantage Oil & Gas Ltd.", "profit" : -0.232 }
+{ "Company" : "iShares MSCI All Country Asia ex Jpn Idx" }
+{ "Company" : "Atlas Air Worldwide Holdings Inc.", "profit" : 0.071 }
+{ "Company" : "AllianceBernstein Holding L.P.", "profit" : 0.896 }
+{ "Company" : "Abaxis Inc.", "profit" : 0.1 }
+{ "Company" : "ABB Ltd.", "profit" : 0.069 }
+{ "Company" : "AbbVie Inc.", "profit" : 0.24 }
+Type "it" for more
 ```
 
 ### 8. Analise as ações. É uma bola de cristal na sua mão... Quais as três ações você investiria?
 
 ```sh
+> db.stocks.find({}).sort({"Relative Strength Index (14)" : -1}).limit(3)
 ```
 
 ### 9. Liste as ações agrupadas por setor
 
 ```sh
+> db.stocks.aggregate([{$group : { _id : { "Sector" : "$Sector"}}}])
+{ "_id" : { "Sector" : "Financial" } }
+{ "_id" : { "Sector" : "Technology" } }
+{ "_id" : { "Sector" : "Healthcare" } }
+{ "_id" : { "Sector" : "Consumer Goods" } }
+{ "_id" : { "Sector" : "Industrial Goods" } }
+{ "_id" : { "Sector" : "Basic Materials" } }
+{ "_id" : { "Sector" : "Services" } }
+{ "_id" : { "Sector" : "Utilities" } }
+{ "_id" : { "Sector" : "Conglomerates" } }
 ```
 
 ## Exercício 3 – Fraude na Enron!
