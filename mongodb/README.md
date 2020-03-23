@@ -455,13 +455,28 @@ Type "it" for more
 
 ## Exercício 3 – Fraude na Enron!
 
+Obs: o comando utilizado para importar o dataset foi:
+```sh
+mongoimport --db enron --collection enron --file enron.json
+```
+
 ### 1. Liste as pessoas que enviaram e-mails (de forma distinta, ou seja, sem repetir). Quantas pessoas são?
 
 ```sh
+> db.enron.aggregate([{$group : {_id : {"Sender" : "$sender" }}}])
+--ou
+> db.enron.distinct('sender')
+```
+
+Para contar os registros:
+```sh
+> db.enron.distinct('sender').length 
+2200
 ```
 
 ### 2. Contabilize quantos e-mails tem a palavra “fraud”
 
 ```sh
+> db.enron.count({ $where : "this.text.includes('fraud')"})
+23
 ```
-
